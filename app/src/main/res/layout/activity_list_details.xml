@@ -27,7 +27,8 @@
             android:id="@+id/btnEditList"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/circle_button"
+            android:padding="8dp"
             android:scaleType="centerInside"
             android:contentDescription="Edit List"
             android:src="@android:drawable/ic_menu_edit"/>

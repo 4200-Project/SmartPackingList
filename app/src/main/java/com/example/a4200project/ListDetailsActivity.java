@@ -15,8 +15,8 @@ public class ListDetailsActivity extends AppCompatActivity {
     private ImageButton btnEditList;
     private ListView listViewItems;
     private Button btnAddItem;
-    private ArrayList<String> items;
-    private ArrayAdapter<String> adapter;
+    private ArrayList<PackingItem> items;
+    private ItemsAdapter adapter;
 
     // Hard-coded for demonstration
     private String tripType = "Beach";
@@ -38,14 +38,12 @@ public class ListDetailsActivity extends AppCompatActivity {
         String listName = getIntent().getStringExtra("LIST_NAME");
         tvListName.setText(listName);
 
-        // Temporary data for demonstration
         items = new ArrayList<>();
-        items.add("Sunscreen");
-        items.add("Swimsuit");
-        items.add("Flip-flops");
+        items.add(new PackingItem("Sunscreen", false));
+        items.add(new PackingItem("Swimsuit", false));
+        items.add(new PackingItem("Flip-flops", false));
 
-        // Set up the adapter for ListView
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        adapter = new ItemsAdapter(this, items);
         listViewItems.setAdapter(adapter);
 
         // Handle item click (Edit an item)
@@ -73,7 +71,7 @@ public class ListDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // NEW: Handle Edit List Button
+        // Handle Edit List Button
         btnEditList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +88,16 @@ public class ListDetailsActivity extends AppCompatActivity {
                 // finish();
             }
         });
+
+        btnEditList.setOnClickListener(v -> {
+            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
+                    .withEndAction(() -> v.animate().scaleX(1f).scaleY(1f).setDuration(100));
+
+            // Navigate to Edit Activity
+            Intent intent = new Intent(ListDetailsActivity.this, CreateListActivity.class);
+            intent.putExtra("EDIT_MODE", true);
+            startActivity(intent);
+        });
     }
 
     // Show dialog to edit an item
@@ -98,14 +106,17 @@ public class ListDetailsActivity extends AppCompatActivity {
         builder.setTitle("Edit Item");
 
         final EditText input = new EditText(this);
-        input.setText(items.get(position));
+        input.setText(items.get(position).getName());
         builder.setView(input);
 
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                items.set(position, input.getText().toString());
-                adapter.notifyDataSetChanged();
+                String updatedName = input.getText().toString().trim();
+                if (!updatedName.isEmpty()) {
+                    items.get(position).setName(updatedName);
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -145,8 +156,8 @@ public class ListDetailsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String newItem = input.getText().toString();
                 if (!newItem.isEmpty()) {
-                    items.add(newItem); // Add new item
-                    adapter.notifyDataSetChanged(); // Refresh list
+                    items.add(new PackingItem(newItem, false));
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
@@ -154,4 +165,5 @@ public class ListDetailsActivity extends AppCompatActivity {
         builder.setNegativeButton("Cancel", null);
         builder.show();
     }
+
 }
