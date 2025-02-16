@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Input field for list name -->
+    <EditText
+        android:id="@+id/etListName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="List Name" />
+
+    <!-- Input field for trip type -->
+    <EditText
+        android:id="@+id/etTripType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Trip Type" />
+
+    <!-- Input field for destination -->
+    <EditText
+        android:id="@+id/etDestination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Destination" />
+
+    <!-- Input field for duration -->
+    <EditText
+        android:id="@+id/etDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Duration (days)"
+        android:inputType="number" />
+
+    <!-- Button to save the list -->
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save List"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
