@@ -37,9 +37,17 @@
     <!-- Button to save the list -->
     <Button
         android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save List"
         android:layout_marginTop="16dp" />
 
+    <!-- Button to delete the list (hidden by default) -->
+    <Button
+        android:id="@+id/btnDeleteList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete List"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
 </LinearLayout>

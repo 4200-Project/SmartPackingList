@@ -2,24 +2,26 @@ package com.example.a4200project;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 public class ListDetailsActivity extends AppCompatActivity {
 
     private TextView tvListName;
+    private ImageButton btnEditList;
     private ListView listViewItems;
     private Button btnAddItem;
     private ArrayList<String> items;
     private ArrayAdapter<String> adapter;
+
+    // Hard-coded for demonstration
+    private String tripType = "Beach";
+    private String destination = "Bali";
+    private String duration = "5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class ListDetailsActivity extends AppCompatActivity {
 
         // Initialize UI elements
         tvListName = findViewById(R.id.tvListName);
+        btnEditList = findViewById(R.id.btnEditList);  // <-- new
         listViewItems = findViewById(R.id.listViewItems);
         btnAddItem = findViewById(R.id.btnAddItem);
 
@@ -67,6 +70,24 @@ public class ListDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAddItemDialog();
+            }
+        });
+
+        // NEW: Handle Edit List Button
+        btnEditList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Start CreateListActivity in "edit mode"
+                Intent intent = new Intent(ListDetailsActivity.this, CreateListActivity.class);
+                // Pass current list info
+                intent.putExtra("EDIT_MODE", true);
+                intent.putExtra("LIST_NAME", listName);
+                intent.putExtra("TRIP_TYPE", tripType);
+                intent.putExtra("DESTINATION", destination);
+                intent.putExtra("DURATION", duration);
+                startActivity(intent);
+                // Optionally finish this activity if you don't plan on coming back
+                // finish();
             }
         });
     }
