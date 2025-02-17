@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
 
     <!-- Input field for list name -->
     <EditText
@@ -48,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delete List"
+        android:backgroundTint="@color/alertBackground"
         android:layout_marginTop="8dp"
         android:visibility="gone" />
 </LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="colorPrimary">#6A2AA8</color> <!-- Darker purple -->
+    <color name="colorPrimaryVariant">#873ACC</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <!-- Background Colors -->
+    <color name="colorBackground">#121212</color>  <!-- Dark gray for background -->
+    <color name="colorOnBackground">#FFFFFF</color>
+    <color name="alertBackground">#F57C00</color>
+
+    <!-- Text Colors -->
+    <color name="textPrimary">#FFFFFF</color>
+    <color name="textSecondary">#B3B3B3</color>  <!-- Light gray -->
+
+    <!-- Button Colors -->
+    <color name="buttonBackground">#6A2AA8</color>
+    <color name="buttonText">#FFFFFF</color>
+</resources>

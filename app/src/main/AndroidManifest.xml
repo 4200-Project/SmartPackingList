@@ -24,7 +24,8 @@
 
         <activity android:name=".CreateListActivity"/>
         <activity android:name=".ListDetailsActivity"/>
-        <activity android:name=".SettingsActivity"/>
+        <activity android:name=".SettingsActivity"
+            android:configChanges="uiMode" />
 
     </application>
 

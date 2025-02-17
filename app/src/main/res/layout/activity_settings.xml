@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
 
     <!-- Dark Mode Toggle Row -->
     <LinearLayout
@@ -18,7 +19,6 @@
             android:layout_weight="1"
             android:text="Enable Dark Mode"
             android:textSize="18sp"
-            android:textColor="@color/black"
             android:paddingStart="8dp"/>
 
         <Switch
@@ -48,7 +48,6 @@
             android:layout_weight="1"
             android:text="Enable Notifications"
             android:textSize="18sp"
-            android:textColor="@color/black"
             android:paddingStart="8dp"/>
 
         <Switch
