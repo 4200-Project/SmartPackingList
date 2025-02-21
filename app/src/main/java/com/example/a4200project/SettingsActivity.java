@@ -1,7 +1,10 @@
 package com.example.a4200project;
 
+import android.app.UiModeManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -16,12 +19,24 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Load theme before setting content view
+        // Get SharedPreferences
         sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("DarkMode", false)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        // Check if the user has manually set dark mode
+        boolean userPrefersDarkMode = sharedPreferences.getBoolean("DarkMode", false);
+
+        // Detect system theme
+        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        boolean isSystemDark = (currentNightMode == Configuration.UI_MODE_NIGHT_YES);
+
+        // Apply either user preference or system default
+        if (sharedPreferences.contains("DarkMode")) {
+            AppCompatDelegate.setDefaultNightMode(userPrefersDarkMode ?
+                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            // Use system default if no preference is saved
+            AppCompatDelegate.setDefaultNightMode(isSystemDark ?
+                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
         }
 
         super.onCreate(savedInstanceState);
@@ -31,8 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
         switchDarkMode = findViewById(R.id.switchDarkMode);
         switchNotifications = findViewById(R.id.switchNotifications);
 
-        // Load saved preferences
-        switchDarkMode.setChecked(sharedPreferences.getBoolean("DarkMode", false));
+        // Set switch states
+        switchDarkMode.setChecked(sharedPreferences.contains("DarkMode") ? userPrefersDarkMode : isSystemDark);
         switchNotifications.setChecked(sharedPreferences.getBoolean("Notifications", true));
 
         // Dark Mode Toggle
@@ -43,14 +58,11 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putBoolean("DarkMode", isChecked);
                 editor.apply();
 
-                // Apply dark mode and restart activity
-                if (isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
+                // Apply dark mode
+                AppCompatDelegate.setDefaultNightMode(isChecked ?
+                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
-                // Restart the app to fully apply theme changes
+                // Restart the activity to apply changes
                 recreate();
                 Toast.makeText(SettingsActivity.this, "Dark Mode " + (isChecked ? "Enabled" : "Disabled"), Toast.LENGTH_SHORT).show();
             }
