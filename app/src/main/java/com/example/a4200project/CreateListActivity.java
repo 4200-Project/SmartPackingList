@@ -1,20 +1,24 @@
 package com.example.a4200project;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 public class CreateListActivity extends AppCompatActivity {
-
-    // UI elements
-    private EditText etListName, etTripType, etDestination, etDuration;
-    private Button btnSave, btnDeleteList;
+    private EditText etListName;
+    private EditText etTripType;
+    private EditText etDestination;
+    private EditText etDuration;
+    private Button btnSave;
+    private Button btnDeleteList;
+    private AppDatabase db;
     private boolean isEditMode = false;
+    private String originalListName;
+    private int originalListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,58 +33,105 @@ public class CreateListActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
         btnDeleteList = findViewById(R.id.btnDeleteList);
 
-        // Check if we're in Edit Mode
-        Intent intent = getIntent();
-        isEditMode = intent.getBooleanExtra("EDIT_MODE", false);
+        // Initialize database
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "packingitems")
+                .allowMainThreadQueries() // For simplicity, but not recommended for production
+                .build();
 
+        // Check if we're in edit mode
+        isEditMode = getIntent().getBooleanExtra("EDIT_MODE", false);
         if (isEditMode) {
-            // Pre-fill fields
-            String listName = intent.getStringExtra("LIST_NAME");
-            String tripType = intent.getStringExtra("TRIP_TYPE");
-            String destination = intent.getStringExtra("DESTINATION");
-            String duration = intent.getStringExtra("DURATION");
+            // Load existing data
+            originalListName = getIntent().getStringExtra("LIST_NAME");
+            originalListId = getIntent().getIntExtra("LIST_ID", -1);
+            String tripType = getIntent().getStringExtra("TRIP_TYPE");
+            String destination = getIntent().getStringExtra("DESTINATION");
+            String duration = getIntent().getStringExtra("DURATION");
 
-            etListName.setText(listName);
+            etListName.setText(originalListName);
             etTripType.setText(tripType);
             etDestination.setText(destination);
             etDuration.setText(duration);
 
-            // Show Delete button
+            // Show delete button in edit mode
             btnDeleteList.setVisibility(View.VISIBLE);
+            btnSave.setText("Update List");
         }
 
-        // Save button click
+        // Set up save button click listener
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // For now, just navigate back to MainActivity
-                // In a real app, you'd update your data store.
-                Intent mainIntent = new Intent(CreateListActivity.this, MainActivity.class);
-                startActivity(mainIntent);
+                saveList();
             }
         });
 
-        // Delete button click (only visible in edit mode)
+        // Set up delete button click listener
         btnDeleteList.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                // Confirm deletion
-                AlertDialog.Builder builder = new AlertDialog.Builder(CreateListActivity.this);
-                builder.setTitle("Delete List");
-                builder.setMessage("Are you sure you want to delete this list?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // For now, just go back to MainActivity
-                        // In a real app, you'd remove it from your data source
-                        Intent mainIntent = new Intent(CreateListActivity.this, MainActivity.class);
-                        startActivity(mainIntent);
-                    }
-                });
-                builder.setNegativeButton("No", null);
-                builder.show();
+            public void onClick(View v) {
+                deleteList();
             }
         });
+    }
+
+    private void saveList() {
+        String listName = etListName.getText().toString().trim();
+        String tripType = etTripType.getText().toString().trim();
+        String destination = etDestination.getText().toString().trim();
+        String duration = etDuration.getText().toString().trim();
+
+        if (listName.isEmpty()) {
+            etListName.setError("List name is required");
+            return;
+        }
+
+        try {
+            if (isEditMode) {
+                // Update existing list
+                PackingList existingList = db.packingListDao().getById(originalListId);
+                if (existingList != null) {
+                    existingList.setName(listName);
+                    existingList.setTripType(tripType);
+                    existingList.setDestination(destination);
+                    existingList.setDuration(duration);
+                    db.packingListDao().update(existingList);
+                }
+            } else {
+                // Create a new packing list
+                PackingList newList = new PackingList(listName, tripType, destination, duration);
+                db.packingListDao().insert(newList);
+            }
+            
+            Toast.makeText(this, isEditMode ? "List updated successfully" : "List created successfully", 
+                         Toast.LENGTH_SHORT).show();
+            finish();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error saving list: " + e.getMessage(), 
+                         Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void deleteList() {
+        try {
+            PackingList listToDelete = db.packingListDao().getById(originalListId);
+            if (listToDelete != null) {
+                db.packingListDao().delete(listToDelete);
+                Toast.makeText(this, "List deleted successfully", Toast.LENGTH_SHORT).show();
+            }
+            finish();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error deleting list: " + e.getMessage(), 
+                         Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (db != null) {
+            db.close();
+        }
     }
 }

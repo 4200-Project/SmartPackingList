@@ -9,11 +9,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import java.util.ArrayList;
+import java.util.List;
 import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatDelegate;
-
-
+import androidx.room.Room;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fabSettings;
     private ListView listView;
 
-    // Temporary data for demonstration
-    private ArrayList<String> packingLists;
-    private ArrayAdapter<String> adapter;
+    private AppDatabase db;
+    private List<PackingList> packingLists;
+    private ArrayAdapter<PackingList> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +41,41 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize UI elements
         btnCreateList = findViewById(R.id.btnCreateList);
-        fabSettings = findViewById(R.id.fabSettings); // Floating Action Button for Settings
+        fabSettings = findViewById(R.id.fabSettings);
         listView = findViewById(R.id.listView);
 
-        // Temporary data for demonstration
-        packingLists = new ArrayList<>();
-        packingLists.add("Beach Trip to Bali");
-        packingLists.add("Hiking in the Rockies");
-        packingLists.add("Business Trip to New York");
+        // Initialize database
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "packingitems")
+                .fallbackToDestructiveMigration() // This will recreate tables if no migration found
+                .build();
 
-        // Set up the adapter for the ListView
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, packingLists);
-        listView.setAdapter(adapter);
+        // Initialize data
+        new Thread(() -> {
+            PackingListDao packingListDao = db.packingListDao();
+            packingLists = packingListDao.getAll();
+            
+            // Update UI on main thread
+            runOnUiThread(() -> {
+                // Set up the adapter for the ListView with a custom toString implementation
+                adapter = new ArrayAdapter<PackingList>(this, android.R.layout.simple_list_item_1, packingLists) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View view = super.getView(position, convertView, parent);
+                        TextView text = (TextView) view.findViewById(android.R.id.text1);
+                        PackingList item = getItem(position);
+                        text.setText(item.getName());
+                        return view;
+                    }
+                };
+                listView.setAdapter(adapter);
+            });
+        }).start();
 
         // Set up button click listener for creating a new list
         btnCreateList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to CreateListActivity
                 Intent intent = new Intent(MainActivity.this, CreateListActivity.class);
                 startActivity(intent);
             }
@@ -67,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         fabSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to SettingsActivity
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
@@ -77,12 +94,57 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Navigate to ListDetailsActivity with the selected list name
-                String selectedList = packingLists.get(position);
+                PackingList selectedList = packingLists.get(position);
                 Intent intent = new Intent(MainActivity.this, ListDetailsActivity.class);
-                intent.putExtra("LIST_NAME", selectedList); // Pass data to the next activity
+                intent.putExtra("LIST_ID", selectedList.getUid());
+                intent.putExtra("LIST_NAME", selectedList.getName());
+                intent.putExtra("TRIP_TYPE", selectedList.getTripType());
+                intent.putExtra("DESTINATION", selectedList.getDestination());
+                intent.putExtra("DURATION", selectedList.getDuration());
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the list data when activity resumes
+        new Thread(() -> {
+            PackingListDao packingListDao = db.packingListDao();
+            List<PackingList> newList = packingListDao.getAll();
+            
+            // Update UI on main thread
+            runOnUiThread(() -> {
+                packingLists = newList;
+                if (adapter == null) {
+                    // Create new adapter if it doesn't exist
+                    adapter = new ArrayAdapter<PackingList>(this, android.R.layout.simple_list_item_1, packingLists) {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            View view = super.getView(position, convertView, parent);
+                            TextView text = (TextView) view.findViewById(android.R.id.text1);
+                            PackingList item = getItem(position);
+                            text.setText(item.getName());
+                            return view;
+                        }
+                    };
+                    listView.setAdapter(adapter);
+                } else {
+                    // Update existing adapter
+                    adapter.clear();
+                    adapter.addAll(packingLists);
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (db != null) {
+            db.close();
+        }
     }
 }

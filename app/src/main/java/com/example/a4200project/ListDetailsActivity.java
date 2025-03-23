@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListDetailsActivity extends AppCompatActivity {
 
@@ -15,8 +17,11 @@ public class ListDetailsActivity extends AppCompatActivity {
     private ImageButton btnEditList;
     private ListView listViewItems;
     private Button btnAddItem;
-    private ArrayList<PackingItem> items;
+    private List<PackingItem> items;
     private ItemsAdapter adapter;
+    private AppDatabase db;
+    private int listId;
+    private String listName;
 
     // Hard-coded for demonstration
     private String tripType = "Beach";
@@ -30,119 +35,58 @@ public class ListDetailsActivity extends AppCompatActivity {
 
         // Initialize UI elements
         tvListName = findViewById(R.id.tvListName);
-        btnEditList = findViewById(R.id.btnEditList);  // <-- new
+        btnEditList = findViewById(R.id.btnEditList);
         listViewItems = findViewById(R.id.listViewItems);
         btnAddItem = findViewById(R.id.btnAddItem);
 
-        // Get list name from intent
-        String listName = getIntent().getStringExtra("LIST_NAME");
+        // Initialize database
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "packingitems")
+                .allowMainThreadQueries() // For simplicity, but not recommended for production
+                .build();
+
+        // Get list details from intent
+        listId = getIntent().getIntExtra("LIST_ID", -1);
+        listName = getIntent().getStringExtra("LIST_NAME");
         tvListName.setText(listName);
 
-        items = new ArrayList<>();
-        items.add(new PackingItem("Sunscreen", false));
-        items.add(new PackingItem("Swimsuit", false));
-        items.add(new PackingItem("Flip-flops", false));
-
-        adapter = new ItemsAdapter(this, items);
-        listViewItems.setAdapter(adapter);
+        // Load items for this list
+        loadItems();
 
         // Handle item click (Edit an item)
-        listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showEditDialog(position);
-            }
+        listViewItems.setOnItemClickListener((parent, view, position, id) -> {
+            showEditDialog(position);
         });
 
         // Handle long click (Delete an item)
-        listViewItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteDialog(position);
-                return true;
-            }
+        listViewItems.setOnItemLongClickListener((parent, view, position, id) -> {
+            showDeleteDialog(position);
+            return true;
         });
 
         // Handle Add Item Button Click
-        btnAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddItemDialog();
-            }
-        });
+        btnAddItem.setOnClickListener(v -> showAddItemDialog());
 
         // Handle Edit List Button
-        btnEditList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Start CreateListActivity in "edit mode"
-                Intent intent = new Intent(ListDetailsActivity.this, CreateListActivity.class);
-                // Pass current list info
-                intent.putExtra("EDIT_MODE", true);
-                intent.putExtra("LIST_NAME", listName);
-                intent.putExtra("TRIP_TYPE", tripType);
-                intent.putExtra("DESTINATION", destination);
-                intent.putExtra("DURATION", duration);
-                startActivity(intent);
-                // Optionally finish this activity if you don't plan on coming back
-                // finish();
-            }
-        });
-
         btnEditList.setOnClickListener(v -> {
-            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100)
-                    .withEndAction(() -> v.animate().scaleX(1f).scaleY(1f).setDuration(100));
-
-            // Navigate to Edit Activity
+            // Navigate to CreateListActivity in edit mode
             Intent intent = new Intent(ListDetailsActivity.this, CreateListActivity.class);
             intent.putExtra("EDIT_MODE", true);
+            intent.putExtra("LIST_ID", listId);
+            intent.putExtra("LIST_NAME", listName);
+            intent.putExtra("TRIP_TYPE", getIntent().getStringExtra("TRIP_TYPE"));
+            intent.putExtra("DESTINATION", getIntent().getStringExtra("DESTINATION"));
+            intent.putExtra("DURATION", getIntent().getStringExtra("DURATION"));
             startActivity(intent);
         });
     }
 
-    // Show dialog to edit an item
-    private void showEditDialog(int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Edit Item");
-
-        final EditText input = new EditText(this);
-        input.setText(items.get(position).getName());
-        builder.setView(input);
-
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String updatedName = input.getText().toString().trim();
-                if (!updatedName.isEmpty()) {
-                    items.get(position).setName(updatedName);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
-
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
+    private void loadItems() {
+        items = db.packingItemDao().getAllForList(listId);
+        adapter = new ItemsAdapter(this, items);
+        listViewItems.setAdapter(adapter);
     }
 
-    // Show confirmation dialog to delete an item
-    private void showDeleteDialog(int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Delete Item");
-        builder.setMessage("Are you sure you want to delete this item?");
-
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                items.remove(position);
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        builder.setNegativeButton("No", null);
-        builder.show();
-    }
-
-    // Show dialog to add a new item
     private void showAddItemDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add Item");
@@ -151,14 +95,12 @@ public class ListDetailsActivity extends AppCompatActivity {
         input.setHint("Enter item name");
         builder.setView(input);
 
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newItem = input.getText().toString();
-                if (!newItem.isEmpty()) {
-                    items.add(new PackingItem(newItem, false));
-                    adapter.notifyDataSetChanged();
-                }
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String itemName = input.getText().toString().trim();
+            if (!itemName.isEmpty()) {
+                PackingItem newItem = new PackingItem(listId, itemName, false);
+                db.packingItemDao().insert(newItem);
+                loadItems(); // Refresh the list
             }
         });
 
@@ -166,4 +108,71 @@ public class ListDetailsActivity extends AppCompatActivity {
         builder.show();
     }
 
+    private void showEditDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit Item");
+
+        final EditText input = new EditText(this);
+        PackingItem item = items.get(position);
+        input.setText(item.getName());
+        builder.setView(input);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String updatedName = input.getText().toString().trim();
+            if (!updatedName.isEmpty()) {
+                item.setName(updatedName);
+                db.packingItemDao().update(item);
+                loadItems(); // Refresh the list
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    private void showDeleteDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Item");
+        builder.setMessage("Are you sure you want to delete this item?");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            PackingItem item = items.get(position);
+            db.packingItemDao().delete(item);
+            loadItems(); // Refresh the list
+        });
+
+        builder.setNegativeButton("No", null);
+        builder.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // Check if list still exists
+        PackingList currentList = db.packingListDao().getById(listId);
+        if (currentList == null) {
+            // List was deleted, return to main activity
+            Toast.makeText(this, "List has been deleted", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // Update list name if it changed
+        if (!currentList.getName().equals(listName)) {
+            listName = currentList.getName();
+            tvListName.setText(listName);
+        }
+
+        // Refresh items
+        loadItems();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (db != null) {
+            db.close();
+        }
+    }
 }
