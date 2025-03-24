@@ -24,15 +24,30 @@
             android:textStyle="bold" />
 
         <!-- Edit Button -->
+
+        <!-- Suggest Button -->
+        <ImageButton
+            android:id="@+id/btnGenerateSuggestions"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/circle_button"
+            android:contentDescription="Edit List"
+            android:padding="8dp"
+            android:layout_margin="4dp"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/btn_star" />
+
         <ImageButton
             android:id="@+id/btnEditList"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/circle_button"
-            android:padding="8dp"
-            android:scaleType="centerInside"
             android:contentDescription="Edit List"
-            android:src="@android:drawable/ic_menu_edit"/>
+            android:padding="8dp"
+            android:layout_margin="4dp"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_menu_edit" />
+
     </LinearLayout>
 
     <!-- ListView to display items -->

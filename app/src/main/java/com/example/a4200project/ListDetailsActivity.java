@@ -22,6 +22,7 @@ public class ListDetailsActivity extends AppCompatActivity {
     private AppDatabase db;
     private int listId;
     private String listName;
+    private ImageButton btnGenerateSuggestions;
 
     // Hard-coded for demonstration
     private String tripType = "Beach";
@@ -38,6 +39,7 @@ public class ListDetailsActivity extends AppCompatActivity {
         btnEditList = findViewById(R.id.btnEditList);
         listViewItems = findViewById(R.id.listViewItems);
         btnAddItem = findViewById(R.id.btnAddItem);
+        btnGenerateSuggestions = findViewById(R.id.btnGenerateSuggestions);
 
         // Initialize database
         db = Room.databaseBuilder(getApplicationContext(),
