@@ -9,7 +9,9 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ListDetailsActivity extends AppCompatActivity {
 
@@ -24,10 +26,6 @@ public class ListDetailsActivity extends AppCompatActivity {
     private String listName;
     private ImageButton btnGenerateSuggestions;
 
-    // Hard-coded for demonstration
-    private String tripType = "Beach";
-    private String destination = "Bali";
-    private String duration = "5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +79,14 @@ public class ListDetailsActivity extends AppCompatActivity {
             intent.putExtra("DURATION", getIntent().getStringExtra("DURATION"));
             startActivity(intent);
         });
+
+        // Handle Suggestion button
+        btnGenerateSuggestions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generateSuggestionsForList();
+            }
+        });
     }
 
     private void loadItems() {
@@ -88,6 +94,54 @@ public class ListDetailsActivity extends AppCompatActivity {
         adapter = new ItemsAdapter(this, items);
         listViewItems.setAdapter(adapter);
     }
+
+    private void generateSuggestionsForList() {
+        PackingList currentList = db.packingListDao().getById(listId);
+        if (currentList == null) {
+            Toast.makeText(this, "List not found!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String tripType = currentList.getTripType();
+        String destination = currentList.getDestination();
+        String durationString = currentList.getDuration();
+
+        int duration = 0;
+        try {
+            duration = Integer.parseInt(durationString);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        List<String> suggestions = ItemSuggester.getSuggestions(tripType, destination, duration);
+
+        List<PackingItem> existingItems = db.packingItemDao().getAllForList(listId);
+
+        Set<String> existingNames = new HashSet<>();
+        for (PackingItem item : existingItems) {
+            existingNames.add(item.getName().toLowerCase());
+        }
+
+        boolean anyNewAdded = false;
+        for (String suggestion : suggestions) {
+            String lowerCaseSug = suggestion.toLowerCase();
+            if (!existingNames.contains(lowerCaseSug)) {
+                // Not in DB, insert it
+                PackingItem newItem = new PackingItem(listId, suggestion, false);
+                db.packingItemDao().insert(newItem);
+                anyNewAdded = true;
+            }
+        }
+
+        loadItems();
+
+        if (anyNewAdded) {
+            Toast.makeText(this, "Suggestions generated!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No new suggestions to add!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void showAddItemDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

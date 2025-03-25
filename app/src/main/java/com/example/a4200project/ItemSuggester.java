@@ -14,14 +14,12 @@ public class ItemSuggester {
         // (All the defined categories, plus fallback "other")
         // ==============================
 
-        // 1) Fallback "other"
         tripTypeMap.put("other", Arrays.asList(
                 "Comfortable Clothing",
                 "Chargers",
                 "Basic Toiletries"
         ));
 
-        // 2) Beach
         tripTypeMap.put("beach", Arrays.asList(
                 "Swimsuit",
                 "Sunscreen",
@@ -32,7 +30,6 @@ public class ItemSuggester {
                 "Waterproof Phone Case"
         ));
 
-        // 3) Hiking
         tripTypeMap.put("hiking", Arrays.asList(
                 "Hiking Boots",
                 "Water Bottle",
@@ -44,7 +41,6 @@ public class ItemSuggester {
                 "Rain Jacket"
         ));
 
-        // 4) Business
         tripTypeMap.put("business", Arrays.asList(
                 "Formal Attire",
                 "Laptop",
@@ -55,7 +51,13 @@ public class ItemSuggester {
                 "Laptop Bag / Briefcase"
         ));
 
-        // 5) Camping
+        tripTypeMap.put("hackathon", Arrays.asList(
+                "Laptop",
+                "Chargers",
+                "Notepad & Pen",
+                "Deodorant"
+        ));
+
         tripTypeMap.put("camping", Arrays.asList(
                 "Tent",
                 "Sleeping Bag",
@@ -67,7 +69,6 @@ public class ItemSuggester {
                 "Trash Bags"
         ));
 
-        // 6) Cruise
         tripTypeMap.put("cruise", Arrays.asList(
                 "Casual Clothing",
                 "Formal Outfit (for dinners)",
@@ -78,7 +79,6 @@ public class ItemSuggester {
                 "Small Daypack for Excursions"
         ));
 
-        // 7) Ski (also used for "snowboard")
         tripTypeMap.put("ski", Arrays.asList(
                 "Ski Jacket",
                 "Ski Pants",
@@ -88,10 +88,8 @@ public class ItemSuggester {
                 "Warm Hat",
                 "Neck Gaiter or Scarf"
         ));
-        // Alias "snowboard" to the same list
         tripTypeMap.put("snowboard", tripTypeMap.get("ski"));
 
-        // 8) Road Trip
         tripTypeMap.put("road trip", Arrays.asList(
                 "Driver’s License",
                 "Snacks & Drinks",
@@ -102,7 +100,6 @@ public class ItemSuggester {
                 "Cash for Tolls"
         ));
 
-        // 9) Backpacking
         tripTypeMap.put("backpacking", Arrays.asList(
                 "Lightweight Backpack",
                 "Quick-Dry Clothing",
@@ -113,7 +110,6 @@ public class ItemSuggester {
                 "Hostel Lock"
         ));
 
-        // 10) Theme Park
         tripTypeMap.put("theme park", Arrays.asList(
                 "Comfortable Shoes",
                 "Small Backpack or Sling Bag",
@@ -124,7 +120,6 @@ public class ItemSuggester {
                 "Poncho (water rides)"
         ));
 
-        // 11) Safari
         tripTypeMap.put("safari", Arrays.asList(
                 "Neutral-Colored Clothing",
                 "Binoculars",
@@ -135,7 +130,6 @@ public class ItemSuggester {
                 "Sturdy Closed-Toe Shoes"
         ));
 
-        // 12) Romantic Getaway
         tripTypeMap.put("romantic", Arrays.asList(
                 "Nice Dinner Outfit",
                 "Comfortable Yet Stylish Shoes",
@@ -143,7 +137,6 @@ public class ItemSuggester {
                 "Candles / Portable Diffuser"
         ));
 
-        // 13) Family Vacation
         tripTypeMap.put("family", Arrays.asList(
                 "Games / Activities for Kids",
                 "Child-Friendly Snacks",
@@ -152,7 +145,6 @@ public class ItemSuggester {
                 "Portable Entertainment (Tablet, Books)"
         ));
 
-        // 14) Photography Trip
         tripTypeMap.put("photography", Arrays.asList(
                 "Camera & Lenses",
                 "Extra Memory Cards",
@@ -166,14 +158,11 @@ public class ItemSuggester {
         // (All the defined locations, plus fallback "other")
         // ==============================
 
-        // 1) Fallback "other"
         destinationMap.put("other", Arrays.asList(
-                "Universal Travel Adapter",
                 "Comfortable Shoes",
                 "Umbrella (Weather Varies)"
         ));
 
-        // 2) Bali
         destinationMap.put("bali", Arrays.asList(
                 "Sarong",
                 "Travel Adapter",
@@ -181,7 +170,6 @@ public class ItemSuggester {
                 "Insect Repellent"
         ));
 
-        // 3) Switzerland
         destinationMap.put("switzerland", Arrays.asList(
                 "Warm Jacket",
                 "Travel Adapter (Type J)",
@@ -189,7 +177,6 @@ public class ItemSuggester {
                 "Sturdy Walking Shoes"
         ));
 
-        // 4) Japan
         destinationMap.put("japan", Arrays.asList(
                 "Travel Adapter (Type A/B)",
                 "Pocket Wi-Fi or SIM Card",
@@ -198,7 +185,6 @@ public class ItemSuggester {
                 "Phrasebook / Translation App"
         ));
 
-        // 5) New York
         destinationMap.put("new york", Arrays.asList(
                 "Comfortable Walking Shoes",
                 "MetroCard / Contactless Payment",
@@ -206,7 +192,6 @@ public class ItemSuggester {
                 "Tote Bag (for shopping)"
         ));
 
-        // 6) Hawaii
         destinationMap.put("hawaii", Arrays.asList(
                 "Swimsuit",
                 "Sunscreen",
@@ -215,7 +200,6 @@ public class ItemSuggester {
                 "Snorkeling Gear (optional)"
         ));
 
-        // 7) Australia
         destinationMap.put("australia", Arrays.asList(
                 "Wide-Brimmed Hat",
                 "High-SPF Sunscreen",
@@ -224,7 +208,6 @@ public class ItemSuggester {
                 "Reusable Water Bottle"
         ));
 
-        // 8) Canada
         destinationMap.put("canada", Arrays.asList(
                 "Warm Coat (in winter)",
                 "Gloves & Scarf (in winter)",
@@ -233,7 +216,6 @@ public class ItemSuggester {
                 "Umbrella (west coast)"
         ));
 
-        // 9) London
         destinationMap.put("london", Arrays.asList(
                 "Travel Adapter (Type G)",
                 "Umbrella or Raincoat",
@@ -241,7 +223,6 @@ public class ItemSuggester {
                 "Oyster Card or Contactless for Tube"
         ));
 
-        // 10) Paris
         destinationMap.put("paris", Arrays.asList(
                 "Stylish Clothing (Parisians dress well)",
                 "Comfortable Walking Shoes",
@@ -250,7 +231,6 @@ public class ItemSuggester {
                 "Collapsible Tote for Shopping"
         ));
 
-        // 11) Rome
         destinationMap.put("rome", Arrays.asList(
                 "Comfortable Sandals or Walking Shoes",
                 "Travel Adapter (Type F/L)",
@@ -258,7 +238,6 @@ public class ItemSuggester {
                 "Phrasebook / Basic Italian Phrases"
         ));
 
-        // 12) Bangkok
         destinationMap.put("bangkok", Arrays.asList(
                 "Lightweight Clothing (humid climate)",
                 "Travel Adapter (Type A/C)",
@@ -266,7 +245,6 @@ public class ItemSuggester {
                 "Comfortable Slip-On Shoes (temples)"
         ));
 
-        // 13) Iceland
         destinationMap.put("iceland", Arrays.asList(
                 "Warm Layers (wind & cold)",
                 "Swimsuit (for hot springs)",
@@ -274,7 +252,6 @@ public class ItemSuggester {
                 "Travel Adapter (Type C/F)"
         ));
 
-        // 14) South Africa
         destinationMap.put("south africa", Arrays.asList(
                 "Travel Adapter (Type D/M/N)",
                 "Insect Repellent (especially for safari areas)",

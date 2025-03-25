@@ -18,7 +18,7 @@
         android:id="@+id/etTripType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Trip Type" />
+        android:hint="Trip Type (E.g., beach, business, etc.)" />
 
     <!-- Input field for destination -->
     <EditText
