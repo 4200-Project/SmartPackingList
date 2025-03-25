@@ -42,6 +42,7 @@ public class ListDetailsActivity extends AppCompatActivity {
         // Initialize database
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "packingitems")
+                .fallbackToDestructiveMigration()
                 .allowMainThreadQueries() // For simplicity, but not recommended for production
                 .build();
 

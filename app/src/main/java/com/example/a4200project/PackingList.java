@@ -21,11 +21,15 @@ public class PackingList {
     @ColumnInfo(name = "duration")
     public String duration;
 
-    public PackingList(String name, String tripType, String destination, String duration) {
+    @ColumnInfo(name = "departure_date")
+    public long departureDate; // store as a timestamp (ms since epoch)
+
+    public PackingList(String name, String tripType, String destination, String duration, long departureDate) {
         this.name = name;
         this.tripType = tripType;
         this.destination = destination;
         this.duration = duration;
+        this.departureDate = departureDate;
     }
 
     // Getters and setters
@@ -43,4 +47,8 @@ public class PackingList {
 
     public String getDuration() { return duration; }
     public void setDuration(String duration) { this.duration = duration; }
+
+    public long getDepartureDate() { return departureDate; }
+    public void setDepartureDate(long departureDate) { this.departureDate = departureDate; }
+
 } 

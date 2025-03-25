@@ -19,6 +19,7 @@ public class ItemsAdapter extends ArrayAdapter<PackingItem> {
         super(context, 0, items);
         db = Room.databaseBuilder(context.getApplicationContext(),
                 AppDatabase.class, "packingitems")
+                .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build();
     }
