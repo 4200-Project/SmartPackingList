@@ -151,9 +151,9 @@ public class CreateListActivity extends AppCompatActivity {
                     scheduleTripReminder(existingList);
                 }
             } else {
-                // Create a new packing list
                 PackingList newList = new PackingList(listName, tripType, destination, duration, departureTimestamp);
-                db.packingListDao().insert(newList);
+                long newId = db.packingListDao().insert(newList);
+                newList.setUid((int) newId);
                 scheduleTripReminder(newList);
             }
 
@@ -202,13 +202,14 @@ public class CreateListActivity extends AppCompatActivity {
         long now = System.currentTimeMillis();
         long triggerTime = dayBefore;
         if (triggerTime < now) {
-            // For testing: 10 seconds from now
-            triggerTime = now + 10_000;
+            // For testing: 30 seconds from now
+            triggerTime = now + 30_000;
         }
 
         // Prepare broadcast
         Intent intent = new Intent(this, TripReminderReceiver.class);
         intent.putExtra("LIST_NAME", list.getName());
+        intent.putExtra("LIST_ID", list.getUid());
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,

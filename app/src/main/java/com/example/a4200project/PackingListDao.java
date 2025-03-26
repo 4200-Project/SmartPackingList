@@ -16,7 +16,7 @@ public interface PackingListDao {
     PackingList getById(int listId);
 
     @Insert
-    void insert(PackingList list);
+    long insert(PackingList list);
 
     @Update
     void update(PackingList list);
