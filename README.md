@@ -20,7 +20,7 @@ SmartPackingList is an Android app that helps users create and manage packing li
 
 2. Open the project in Android Studio
 
-3. Build and run on an emulator or device (API 33+ recommended)
+3. Build and run on an emulator or device (Android 13+ recommended)
 
 ## Notes
 
