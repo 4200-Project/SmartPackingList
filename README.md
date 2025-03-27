@@ -1,6 +1,6 @@
 # SmartPackingList
 
-SmartPackingList is an Android app that helps users create and manage packing lists for their trips. It features offline AI-powered item suggestions based on trip type, destination, and duration.
+SmartPackingList is an Android app that helps users create and manage packing lists for their trips. It features offline item suggestions based on trip type, destination, and duration.
 
 ## Features
 
