@@ -6,59 +6,121 @@
     android:padding="16dp"
     android:gravity="center">
 
-    <!-- Input field for list name -->
-    <EditText
-        android:id="@+id/etListName"
+    <!-- Container for list name input -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="List Name" />
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@drawable/rounded_background">
 
-    <!-- Input field for trip type -->
-    <EditText
-        android:id="@+id/etTripType"
+        <EditText
+            android:id="@+id/etListName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="List Name"
+            android:background="@android:color/transparent"
+            android:elevation="0dp" />
+    </LinearLayout>
+
+    <!-- Container for trip type input -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Trip Type (E.g., beach, business, etc.)" />
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_background">
 
-    <!-- Input field for destination -->
-    <EditText
-        android:id="@+id/etDestination"
+        <EditText
+            android:id="@+id/etTripType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Trip Type (E.g., beach, business, etc.)"
+            android:background="@android:color/transparent"
+            android:elevation="0dp" />
+    </LinearLayout>
+
+    <!-- Container for destination input -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Destination" />
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_background">
 
-    <!-- Input field for duration -->
-    <EditText
-        android:id="@+id/etDuration"
+        <EditText
+            android:id="@+id/etDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Destination"
+            android:background="@android:color/transparent"
+            android:elevation="0dp" />
+    </LinearLayout>
+
+    <!-- Container for duration input -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Duration (days)"
-        android:inputType="number" />
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_background">
 
-    <EditText
-        android:id="@+id/etDepartureDate"
+        <EditText
+            android:id="@+id/etDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Duration (days)"
+            android:inputType="number"
+            android:background="@android:color/transparent"
+            android:elevation="0dp" />
+    </LinearLayout>
+
+    <!-- Container for departure date input -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Trip date"
-        android:focusable="false"
-        android:clickable="true"
-        android:inputType="none" />
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_background">
 
-    <!-- Button to save the list -->
+        <EditText
+            android:id="@+id/etDepartureDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Trip date"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"
+            android:background="@android:color/transparent"
+            android:elevation="0dp" />
+    </LinearLayout>
+
+    <!-- Save button -->
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save List"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@color/colorOnPrimary"
+        android:elevation="4dp" />
 
-    <!-- Button to delete the list (hidden by default) -->
+    <!-- Delete button -->
     <Button
         android:id="@+id/btnDeleteList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delete List"
-        android:backgroundTint="@color/alertBackground"
         android:layout_marginTop="8dp"
-        android:visibility="gone" />
+        android:padding="12dp"
+        android:backgroundTint="@color/alertBackground"
+        android:textColor="@color/colorOnPrimary"
+        android:visibility="gone"
+        android:elevation="4dp" />
 </LinearLayout>

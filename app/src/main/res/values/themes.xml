@@ -4,6 +4,7 @@
         <!-- Primary Colors -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorSecondary">@color/alertBackground</item>
 
         <!-- Background Colors -->
         <item name="android:windowBackground">@color/colorBackground</item>
@@ -16,6 +17,9 @@
         <!-- Button Colors -->
         <item name="colorButtonNormal">@color/buttonBackground</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
+
+        <!-- Elevation and Shadows -->
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="Theme._4200Project" parent="Base.Theme._4200Project" />

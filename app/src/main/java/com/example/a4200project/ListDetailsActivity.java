@@ -169,10 +169,16 @@ public class ListDetailsActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Edit Item");
 
+        // Create a container with padding
+        FrameLayout container = new FrameLayout(this);
+        container.setPadding(32, 16, 32, 16); // Add padding (left, top, right, bottom) in pixels
+
         final EditText input = new EditText(this);
         PackingItem item = items.get(position);
         input.setText(item.getName());
-        builder.setView(input);
+        container.addView(input);
+
+        builder.setView(container);
 
         builder.setPositiveButton("Save", (dialog, which) -> {
             String updatedName = input.getText().toString().trim();
