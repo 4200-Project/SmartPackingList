@@ -26,3 +26,4 @@ SmartPackingList is an Android app that helps users create and manage packing li
 
 - Notifications require POST_NOTIFICATIONS permission on Android 13+
 - Exact alarms may require system settings access on Android 12+
+- If you see an error related to Room.databaseBuilder(...), Android Studio will usually offer to add the missing Room dependency via a popup. Just click "Add dependency" when prompted, and it will handle the installation for you automatically.
